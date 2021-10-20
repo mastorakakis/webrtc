@@ -1,5 +1,5 @@
 //connecting to our signaling server
-var conn = new WebSocket('ws://192.168.1.49:8080/webrtc/socket');
+var conn = new WebSocket('ws://elearning.ocn.edu.gr:8444/webrtc/socket');
 
 conn.onopen = function() {
     console.log("Connected to the signaling server");
@@ -38,14 +38,22 @@ var input = document.getElementById("messageInput");
 function initialize() {
 
     var configuration = {
-        iceServers: [
+        'iceServers': [
             {
-                urls: "turn:turn.ucert.gr:5349",
-                username: "test",
-                credential: "12345"
+                'urls': 'stun:stun.12connect.com:3478'
             },
             {
-                urls: "stun:stun.ucert.gr:5349"
+                'urls': 'stun:stun.ucert.gr:3478'
+            },
+            {
+                'urls': 'turn:numb.viagenie.ca',
+                'credential': 'muazkh',
+                'username': 'webrtc@live.com'
+            },
+            {
+                'urls': 'turn:turn.ucert.gr:5349',
+                'credential': 'test',
+                'username': '12345'
             }
         ]
     };
