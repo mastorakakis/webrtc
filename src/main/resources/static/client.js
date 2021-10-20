@@ -1,5 +1,5 @@
 //connecting to our signaling server
-var conn = new WebSocket('ws://192.168.1.49:8080/socket');
+var conn = new WebSocket('ws://192.168.1.49:8080/webrtc/socket');
 
 conn.onopen = function() {
     console.log("Connected to the signaling server");
