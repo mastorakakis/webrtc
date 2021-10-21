@@ -1,6 +1,6 @@
 //connecting to our signaling server
-var conn = new WebSocket('ws://elearning.ocn.edu.gr:8444/webrtc/socket');
-// var conn = new WebSocket('ws://192.168.1.49:8080/webrtc/socket');
+// var conn = new WebSocket('ws://elearning.ocn.edu.gr:8444/webrtc/socket');
+var conn = new WebSocket('ws://192.168.1.49:8080/webrtc/socket');
 
 conn.onopen = function () {
     console.log("Connected to the signaling server");
