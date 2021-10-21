@@ -21,6 +21,7 @@ public class SocketHandler extends TextWebSocketHandler {
         for (WebSocketSession webSocketSession : sessions) {
             if (webSocketSession.isOpen() && !session.getId().equals(webSocketSession.getId())) {
                 webSocketSession.sendMessage(message);
+                System.out.println(session.getId() + " sent a message");
             }
         }
     }
@@ -28,10 +29,12 @@ public class SocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.add(session);
+        System.out.println("add " + session.getId());
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         sessions.remove(session);
+        System.out.println("remove " + session.getId());
     }
 }

@@ -1,6 +1,6 @@
 //connecting to our signaling server
-// var conn = new WebSocket('ws://elearning.ocn.edu.gr:8444/webrtc/socket');
-var conn = new WebSocket('ws://192.168.1.49:8080/webrtc/socket');
+var conn = new WebSocket('ws://elearning.ocn.edu.gr:8444/webrtc/socket');
+// var conn = new WebSocket('ws://192.168.1.49:8080/webrtc/socket');
 
 conn.onopen = function () {
     console.log("Connected to the signaling server");
@@ -60,10 +60,13 @@ function initialize() {
     };
 
     peerConnection = new RTCPeerConnection(configuration);
+    console.log("New RTCPeerConnection");
 
     // Setup ice handling
     peerConnection.onicecandidate = function (event) {
+        console.log("On IceCandidate");
         if (event.candidate) {
+            console.log("WebSocket sending candidate");
             send({
                 event: "candidate",
                 data: event.candidate
@@ -75,6 +78,7 @@ function initialize() {
     dataChannel = peerConnection.createDataChannel("dataChannel", {
         reliable: true
     });
+    console.log("New DataChannel");
 
     dataChannel.onerror = function (error) {
         console.log("Error occured on datachannel:", error);
@@ -91,6 +95,7 @@ function initialize() {
 
     peerConnection.ondatachannel = function (event) {
         dataChannel = event.channel;
+        console.log("On DataChannel");
     };
 
     const constraints = {
@@ -104,23 +109,31 @@ function initialize() {
 }
 
 function createOffer() {
+    console.log("Create Offer");
     peerConnection.createOffer(function (offer) {
+        console.log("WebSocket sending offer");
         send({
             event: "offer",
             data: offer
         });
         peerConnection.setLocalDescription(offer);
+        console.log("Set LocalDescription");
     }, function (error) {
         alert("Error creating an offer");
     });
 }
 
 function handleOffer(offer) {
+    console.log("Handle Offer");
     peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+    console.log("Set RemoteDescription");
 
     // create and send an answer to an offer
     peerConnection.createAnswer(function (answer) {
+        console.log("Create Answer");
         peerConnection.setLocalDescription(answer);
+        console.log("Set LocalDescription");
+        console.log("WebSocket sending answer");
         send({
             event: "answer",
             data: answer
@@ -135,11 +148,15 @@ function handleOffer(offer) {
 };
 
 function handleCandidate(candidate) {
+    console.log("Handle Candidate");
     peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    console.log("Add Candidate");
 };
 
 function handleAnswer(answer) {
+    console.log("Handle Answer");
     peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+    console.log("Set RemoteDescription");
     console.log("connection established successfully!!");
     peerConnection.onaddstream = (e) => {
         document.getElementById("remote-video")
