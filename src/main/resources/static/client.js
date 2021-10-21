@@ -1,12 +1,13 @@
 //connecting to our signaling server
-var conn = new WebSocket('ws://elearning.ocn.edu.gr:8444/webrtc/socket');
+// var conn = new WebSocket('ws://elearning.ocn.edu.gr:8444/webrtc/socket');
+var conn = new WebSocket('ws://192.168.1.49:8080/webrtc/socket');
 
-conn.onopen = function() {
+conn.onopen = function () {
     console.log("Connected to the signaling server");
     initialize();
 };
 
-conn.onmessage = function(msg) {
+conn.onmessage = function (msg) {
     console.log("Got message", msg.data);
     var content = JSON.parse(msg.data);
     var data = content.data;
@@ -61,30 +62,30 @@ function initialize() {
     peerConnection = new RTCPeerConnection(configuration);
 
     // Setup ice handling
-    peerConnection.onicecandidate = function(event) {
+    peerConnection.onicecandidate = function (event) {
         if (event.candidate) {
             send({
-                event : "candidate",
-                data : event.candidate
+                event: "candidate",
+                data: event.candidate
             });
         }
     };
 
     // creating data channel
     dataChannel = peerConnection.createDataChannel("dataChannel", {
-        reliable : true
+        reliable: true
     });
 
-    dataChannel.onerror = function(error) {
+    dataChannel.onerror = function (error) {
         console.log("Error occured on datachannel:", error);
     };
 
     // when we receive a message from the other peer, printing it on the console
-    dataChannel.onmessage = function(event) {
+    dataChannel.onmessage = function (event) {
         console.log("message:", event.data);
     };
 
-    dataChannel.onclose = function() {
+    dataChannel.onclose = function () {
         console.log("data channel is closed");
     };
 
@@ -93,23 +94,23 @@ function initialize() {
     };
 
     const constraints = {
-        video: true,audio : true
+        video: true, audio: true
     };
-    navigator.mediaDevices.getUserMedia(constraints).
-    then(function(stream) {
+    navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
         document.getElementById("local-video").srcObject = stream;
         peerConnection.addStream(stream);
-    }).catch(function(err) { /* handle the error */ });
+    }).catch(function (err) { /* handle the error */
+    });
 }
 
 function createOffer() {
-    peerConnection.createOffer(function(offer) {
+    peerConnection.createOffer(function (offer) {
         send({
-            event : "offer",
-            data : offer
+            event: "offer",
+            data: offer
         });
         peerConnection.setLocalDescription(offer);
-    }, function(error) {
+    }, function (error) {
         alert("Error creating an offer");
     });
 }
@@ -118,13 +119,13 @@ function handleOffer(offer) {
     peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
 
     // create and send an answer to an offer
-    peerConnection.createAnswer(function(answer) {
+    peerConnection.createAnswer(function (answer) {
         peerConnection.setLocalDescription(answer);
         send({
-            event : "answer",
-            data : answer
+            event: "answer",
+            data: answer
         });
-    }, function(error) {
+    }, function (error) {
         alert("Error creating an answer");
     });
     peerConnection.onaddstream = (e) => {
