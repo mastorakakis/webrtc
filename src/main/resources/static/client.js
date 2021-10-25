@@ -7,6 +7,15 @@ conn.onopen = function () {
     initialize();
 };
 
+conn.onerror = function (ev) {
+    console.log(ev);
+}
+
+conn.onclose = function (ev) {
+    console.log(ev);
+    console.log(ev.reason);
+}
+
 conn.onmessage = function (msg) {
     console.log("Got message", msg.data);
     var content = JSON.parse(msg.data);
