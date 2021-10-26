@@ -1,5 +1,6 @@
 package com.example.webrtc;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
+@Slf4j
 public class SocketHandler extends TextWebSocketHandler {
 
     List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
@@ -21,8 +23,10 @@ public class SocketHandler extends TextWebSocketHandler {
         for (WebSocketSession webSocketSession : sessions) {
             if (webSocketSession.isOpen() && !session.getId().equals(webSocketSession.getId())) {
                 webSocketSession.sendMessage(message);
-                System.out.println(session.getId() + " sent a message");
-                System.out.println("Message: " + message.getPayload());
+                log.info("Message payload: " + message.getPayload());
+                log.info("Message payloadLength: " + message.getPayloadLength());
+                log.info(session.getId() + " sent a message");
+                log.info("Message: " + message.getPayload());
             }
         }
     }
@@ -32,12 +36,16 @@ public class SocketHandler extends TextWebSocketHandler {
         sessions.add(session);
         session.setTextMessageSizeLimit(1024 * 1024);
         session.setBinaryMessageSizeLimit(1024 * 1024);
-        System.out.println("add " + session.getId());
+        log.info("TextMessageSize: " + session.getTextMessageSizeLimit());
+        log.info("BinaryMessageSize: " + session.getBinaryMessageSizeLimit());
+        log.info("add " + session.getId());
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         sessions.remove(session);
-        System.out.println("remove " + session.getId());
+        log.info(status.getReason());
+        log.info(Integer.toString(status.getCode()));
+        log.info("remove " + session.getId());
     }
 }

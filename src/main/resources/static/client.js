@@ -12,8 +12,8 @@ conn.onerror = function (ev) {
 }
 
 conn.onclose = function (ev) {
-    console.log(ev);
-    console.log(ev.reason);
+    console.log("onclose event: " + ev);
+    console.log("close reason: " + ev.reason);
 }
 
 conn.onmessage = function (msg) {
