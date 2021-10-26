@@ -30,6 +30,8 @@ public class SocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.add(session);
+        session.setTextMessageSizeLimit(1024 * 1024);
+        session.setBinaryMessageSizeLimit(1024 * 1024);
         System.out.println("add " + session.getId());
     }
 
